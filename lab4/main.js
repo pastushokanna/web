@@ -32,3 +32,18 @@ fs.access(inputPath, fs.constants.F_OK, (err) => {
     }
     console.log('Вхідний файл успішно знайдено.');
 });
+
+const sendError = (res, statusCode, message) => {
+    res.writeHead(statusCode, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ error: message }));
+};
+
+const createServer = () => {
+    return http.createServer((req, res) => {
+        const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+
+        if (parsedUrl.pathname !== '/') {
+            return sendError(res, 404, 'Маршрут не знайдено (404 Not Found)');
+        }
+    });
+};
