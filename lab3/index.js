@@ -1,5 +1,5 @@
 ﻿import { Command } from 'commander';
-import fs from 'fs'; //fs - вбудований у Node.js модуль
+import fs from 'fs';
 const program = new Command();
 
 program
@@ -9,7 +9,6 @@ program
 
 program.option('-f, --file <path>', 'шлях до JSON файлу з даними', 'data.json');
 
-//функція для читання JSON
 function loadData(filePath) {
     try {
         const rawData = fs.readFileSync(filePath, 'utf-8');

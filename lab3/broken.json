@@ -1,0 +1,71 @@
+{
+  "restaurantName": "Смакота",
+  "lastUpdated": "2026-09-15",
+  "categories": [
+    {
+      "id": "c-soups",
+      "name": "Перші страви",
+      "dishes": [
+        {
+          "id": "d-101",
+          "name": "Червоний борщ з пампушками",
+          "price": 185.00,
+          "weight": 400,
+          "ingredients": [
+            "буряк",
+            "капуста",
+            "картопля",
+            "яловичина",
+            "часниковий соус",
+            "пампушки"
+          ],
+          "isSpicy": false,
+          "isVegetarian": false,
+          "spicinessLevel": null,
+          "calories": 420
+        },
+        {
+          "id": "d-105",
+          "name": "Суп Том Ям з креветками",
+          "price": 350.00,
+          "weightGrams": 350,
+          "ingredients": [
+            "бульйон том ям",
+            "тигрові креветки",
+            "гриби шиїтаке",
+            "кокосове молоко",
+            "перець чилі",
+            "лайм"
+          ],
+          "isSpicy": true,
+          "isVegetarian": false,
+          "spicinessLevel": 3,
+          "calories": null
+        }
+      ]
+    },
+    {
+      "id": "c-salads",
+      "name": "Салати",
+      "dishes": [
+        {
+          "id": "d-201",
+          "name": "Грецький салат",
+          "price": 200.00,
+          "weight": 250,
+          "ingredients": [
+            "помідори",
+            "огірки",
+            "болгарський перець",
+            "сир фета",
+            "оливкова олія",
+            "орегано"
+          ],
+          "isSpicy": false,
+          "isVegetarian": true,
+          "spicinessLevel": null,
+          "calories": 210
+      ]
+    }
+  ]
+}
