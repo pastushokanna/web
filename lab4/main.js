@@ -85,3 +85,39 @@ const processBankRecords = (rawRecords, queryParams) => {
     });
 };
 
+const sendSuccess = (res, payload) => {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(payload);
+};
+
+const server = http.createServer((req, res) => {
+    const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+
+    if (parsedUrl.pathname !== '/') {
+        return sendError(res, 404, 'Маршрут не знайдено (404 Not Found)');
+    }
+
+    readDataFile((err, rawRecords) => {
+        if (err) {
+            return sendError(res, 500, rawRecords);
+        }
+
+        const processedData = processBankRecords(rawRecords, parsedUrl.searchParams);
+        const jsonResponse = JSON.stringify(processedData, null, 2);
+
+        if (outputPath) {
+            fs.writeFile(outputPath, jsonResponse, 'utf8', (writeErr) => {
+                if (writeErr) {
+                    return sendError(res, 500, 'Помилка при записі відповіді у файл виводу');
+                }
+                sendSuccess(res, jsonResponse);
+            });
+        } else {
+            sendSuccess(res, jsonResponse);
+        }
+    });
+});
+
+server.listen(port, host, () => {
+    console.log(`Сервер успішно запущено на http://${host}:${port}`);
+});
