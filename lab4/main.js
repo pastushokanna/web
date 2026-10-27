@@ -64,3 +64,24 @@ const readDataFile = (callback) => {
         }
     });
 };
+
+const processBankRecords = (rawRecords, queryParams) => {
+    const mfoFlag = queryParams.get('mfo') === 'true';
+    const normalFlag = queryParams.get('normal') === 'true';
+
+    let filtered = rawRecords;
+    if (normalFlag) {
+        filtered = filtered.filter((item) => item.COD_STATE === 1);
+    }
+
+    return filtered.map((item) => {
+        const record = {};
+        if (mfoFlag) {
+            record.mfo_code = item.MFO !== null && item.MFO !== undefined ? Number(item.MFO) : null;
+        }
+        record.name = item.SHORTNAME || '';
+        record.state_code = item.COD_STATE !== null && item.COD_STATE !== undefined ? Number(item.COD_STATE) : null;
+        return record;
+    });
+};
+
