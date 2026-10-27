@@ -47,3 +47,20 @@ const createServer = () => {
         }
     });
 };
+
+const readDataFile = (callback) => {
+    fs.readFile(inputPath, 'utf8', (readErr, data) => {
+        if (readErr) {
+            return callback(500, 'Помилка при зчитуванні файлу даних на сервері');
+        }
+        try {
+            const rawRecords = JSON.parse(data);
+            if (!Array.isArray(rawRecords)) {
+                return callback(500, 'Очікувався JSON-масив');
+            }
+            callback(null, rawRecords);
+        } catch (parseErr) {
+            callback(500, 'Помилка формату JSON у файлі даних');
+        }
+    });
+};
