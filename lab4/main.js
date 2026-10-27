@@ -24,3 +24,11 @@ if (isNaN(port)) {
     console.error('Помилка: Параметр --port повинен бути числом.');
     process.exit(1);
 }
+
+fs.access(inputPath, fs.constants.F_OK, (err) => {
+    if (err) {
+        console.error(`Cannot find input file: ${inputPath}`);
+        process.exit(1);
+    }
+    console.log('Вхідний файл успішно знайдено.');
+});
