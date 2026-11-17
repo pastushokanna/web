@@ -29,7 +29,20 @@ function readRequestBody(req) {
         req.on('error', (err) => reject(err));
     });
 }
-
 function getCacheFilePath(code) {
     return path.join(CACHE_DIR, `${code}.jpg`);
 }
+
+async function handleRequest(req, res) {
+    try {
+        const urlPath = (req.url || '/').split('?')[0];
+        const match = urlPath.match(/^\/(\d{3})$/);
+
+        if (!match) {
+            res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end('??????????? ????. ?????????? ?????? /<???> (?????????, /200).');
+            return;
+        }
+
+        const statusCode = match[1];
+        const filePath = getCacheFilePath(statusCode);
