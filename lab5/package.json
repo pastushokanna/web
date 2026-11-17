@@ -1,7 +1,7 @@
 {
   "name": "lab5",
   "version": "1.0.0",
-  "description": "",
+  "description": "Caching proxy server on Node.js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
