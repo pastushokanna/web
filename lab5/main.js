@@ -21,3 +21,15 @@ if (Number.isNaN(PORT) || PORT <= 0 || PORT > 65535) {
     console.error('???????: ??????????? ????? ?????.');
     process.exit(1);
 }
+function readRequestBody(req) {
+    return new Promise((resolve, reject) => {
+        const chunks = [];
+        req.on('data', (chunk) => chunks.push(chunk));
+        req.on('end', () => resolve(Buffer.concat(chunks)));
+        req.on('error', (err) => reject(err));
+    });
+}
+
+function getCacheFilePath(code) {
+    return path.join(CACHE_DIR, `${code}.jpg`);
+}
