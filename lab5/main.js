@@ -115,3 +115,20 @@ async function handleRequest(req, res) {
         }
     }
 }
+
+async function startServer() {
+    try {
+        await fs.mkdir(CACHE_DIR, { recursive: true });
+
+        const server = http.createServer(handleRequest);
+        server.listen(PORT, HOST, () => {
+            console.log(`??????-?????? ???????? ?? http://${HOST}:${PORT}`);
+            console.log(`???? ????: ${CACHE_DIR}`);
+        });
+    } catch (err) {
+        console.error('?? ??????? ????????? ??????:', err.message);
+        process.exit(1);
+    }
+}
+
+startServer();
