@@ -6,9 +6,9 @@ import superagent from 'superagent';
 
 const program = new Command();
 program
-    .requiredOption('-h, --host <address>', '?????? ???????')
-    .requiredOption('-p, --port <number>', '???? ???????')
-    .requiredOption('-c, --cache <path>', '???? ?? ???? ????');
+    .requiredOption('-h, --host <address>', 'adresa servera')
+    .requiredOption('-p, --port <number>', 'port servera')
+    .requiredOption('-c, --cache <path>', 'shlyah do teky keshu');
 
 program.parse(process.argv);
 const options = program.opts();
@@ -18,7 +18,7 @@ const PORT = Number(options.port);
 const CACHE_DIR = path.resolve(options.cache);
 
 if (Number.isNaN(PORT) || PORT <= 0 || PORT > 65535) {
-    console.error('???????: ??????????? ????? ?????.');
+    console.error('Pomylka: nekorektnyy nomer portu.');
     process.exit(1);
 }
 function readRequestBody(req) {
@@ -40,7 +40,7 @@ async function handleRequest(req, res) {
 
         if (!match) {
             res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
-            res.end('??????????? ????. ?????????? ?????? /<???> (?????????, /200).');
+            res.end('Nekorektnyy shlyah. Ochikuyet`sya format /<kod> (napryklad, /200).');
             return;
         }
 
@@ -66,7 +66,7 @@ async function handleRequest(req, res) {
                 res.end(imageBuffer);
             } catch (fetchErr) {
                 res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end(`???????? ??? ???? ${statusCode} ?? ???????? ?? http.cat.`);
+                res.end(`Kartynku dlya kodu ${statusCode} ne znaydeno na http.cat.`);
             }
             return;
         }
@@ -76,13 +76,15 @@ async function handleRequest(req, res) {
 
             if (bodyBuffer.length === 0) {
                 res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end('???? ?????? ???????.');
+                res.end('Tilo zapytu porozhnye.');
                 return;
             }
 
+            await fs.mkdir(CACHE_DIR, { recursive: true });
             await fs.writeFile(filePath, bodyBuffer);
+
             res.writeHead(201, { 'Content-Type': 'text/plain; charset=utf-8' });
-            res.end(`???????? ??? ???? ${statusCode} ????????? ? ???.`);
+            res.end(`Kartynku dlya kodu ${statusCode} zberezheno v kesh.`);
             return;
         }
 
@@ -90,11 +92,11 @@ async function handleRequest(req, res) {
             try {
                 await fs.unlink(filePath);
                 res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end(`???????? ??? ???? ${statusCode} ???????? ? ????.`);
+                res.end(`Kartynku dlya kodu ${statusCode} vydaleno z keshu.`);
             } catch (err) {
                 if (err.code === 'ENOENT') {
                     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-                    res.end(`???????? ??? ???? ${statusCode} ?? ???????? ? ????.`);
+                    res.end(`Kartynku dlya kodu ${statusCode} ne znaydeno v keshi.`);
                 } else {
                     throw err;
                 }
@@ -106,12 +108,12 @@ async function handleRequest(req, res) {
             'Content-Type': 'text/plain; charset=utf-8',
             'Allow': 'GET, PUT, DELETE'
         });
-        res.end(`????? ${req.method} ?? ?????????????.`);
+        res.end(`Metod ${req.method} ne pidtrymuyetsya.`);
       } catch (error) {
-        console.error('??????? ???????:', error);
+        console.error('Pomylka servera:', error);
         if (!res.headersSent) {
             res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-            res.end('????????? ??????? ???????.');
+            res.end('Vnutrishnya pomylka servera.');
         }
     }
 }
@@ -122,11 +124,11 @@ async function startServer() {
 
         const server = http.createServer(handleRequest);
         server.listen(PORT, HOST, () => {
-            console.log(`??????-?????? ???????? ?? http://${HOST}:${PORT}`);
-            console.log(`???? ????: ${CACHE_DIR}`);
+            console.log(`Proksi-server zapushcheno na http://${HOST}:${PORT}`);
+            console.log(`Teka keshu: ${CACHE_DIR}`);
         });
     } catch (err) {
-        console.error('?? ??????? ????????? ??????:', err.message);
+        console.error('Ne vdalosya zapustyty server:', err.message);
         process.exit(1);
     }
 }
