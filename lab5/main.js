@@ -70,3 +70,18 @@ async function handleRequest(req, res) {
             }
             return;
         }
+
+        if (req.method === 'PUT') {
+            const bodyBuffer = await readRequestBody(req);
+
+            if (bodyBuffer.length === 0) {
+                res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+                res.end('???? ?????? ???????.');
+                return;
+            }
+
+            await fs.writeFile(filePath, bodyBuffer);
+            res.writeHead(201, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end(`???????? ??? ???? ${statusCode} ????????? ? ???.`);
+            return;
+        }
