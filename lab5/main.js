@@ -46,3 +46,27 @@ async function handleRequest(req, res) {
 
         const statusCode = match[1];
         const filePath = getCacheFilePath(statusCode);
+
+        if (req.method === 'GET') {
+            try {
+                const cachedImage = await fs.readFile(filePath);
+                res.writeHead(200, { 'Content-Type': 'image/jpeg', 'X-Cache': 'HIT' });
+                res.end(cachedImage);
+                return;
+            } catch (err) {
+                if (err.code !== 'ENOENT') throw err;
+            }
+
+            try {
+                const response = await superagent.get(`https://http.cat/${statusCode}`).buffer(true);
+                const imageBuffer = response.body;
+
+                await fs.writeFile(filePath, imageBuffer);
+                res.writeHead(200, { 'Content-Type': 'image/jpeg', 'X-Cache': 'MISS' });
+                res.end(imageBuffer);
+            } catch (fetchErr) {
+                res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+                res.end(`???????? ??? ???? ${statusCode} ?? ???????? ?? http.cat.`);
+            }
+            return;
+        }
