@@ -101,3 +101,17 @@ async function handleRequest(req, res) {
             }
             return;
         }
+
+        res.writeHead(405, {
+            'Content-Type': 'text/plain; charset=utf-8',
+            'Allow': 'GET, PUT, DELETE'
+        });
+        res.end(`????? ${req.method} ?? ?????????????.`);
+      } catch (error) {
+        console.error('??????? ???????:', error);
+        if (!res.headersSent) {
+            res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+            res.end('????????? ??????? ???????.');
+        }
+    }
+}
